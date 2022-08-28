@@ -3,8 +3,8 @@ package http
 import (
 	"context"
 	"fmt"
-	"github-user-service/internal/domain/adaptors/fetcher/user"
 	"github-user-service/internal/domain/adaptors/logger"
+	"github-user-service/internal/domain/services"
 	"github-user-service/internal/http/handlers"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
@@ -17,7 +17,7 @@ type Router struct {
 	logger logger.Logger
 }
 
-func (r *Router) Init(l logger.Logger, fetcher user.Fetcher) {
+func (r *Router) Init(l logger.Logger, userService services.UserService) {
 	router := mux.NewRouter()
 	r.logger = l
 
@@ -29,8 +29,8 @@ func (r *Router) Init(l logger.Logger, fetcher user.Fetcher) {
 	}
 
 	router.Handle("/user/{user-name}", handlers.UserHandler{
-		Log:     l,
-		Fetcher: fetcher,
+		Log:         l,
+		UserService: userService,
 	})
 }
 

@@ -3,15 +3,15 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"github-user-service/internal/domain/adaptors/fetcher/user"
 	"github-user-service/internal/domain/adaptors/logger"
+	"github-user-service/internal/domain/services"
 	"github.com/gorilla/mux"
 	"net/http"
 )
 
 type UserHandler struct {
-	Log     logger.Logger
-	Fetcher user.Fetcher
+	Log         logger.Logger
+	UserService services.UserService
 }
 
 func (u UserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -19,13 +19,13 @@ func (u UserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	userName := vars["user-name"]
 
-	fetchedUser, err := u.Fetcher.Fetch(context.Background(), userName)
+	fetchedUser, err := u.UserService.GetUser(context.Background(), userName)
 	if err != nil {
 		return
 	}
 
 	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusCreated)
 
 	userByte, err := json.Marshal(&fetchedUser)
 	if err != nil {

@@ -2,11 +2,14 @@ package bootstrap
 
 import (
 	"fmt"
-	"github-user-service/internal/adaptors/fetcher/user"
+	"github-user-service/internal/adaptors/fetcher"
 	"github-user-service/internal/domain/adaptors/logger"
 	"github-user-service/internal/http"
 	"github-user-service/internal/pkg/configs"
 	"github-user-service/internal/pkg/logs"
+	"github-user-service/internal/repository"
+	services2 "github-user-service/internal/services"
+	"github-user-service/internal/streaming"
 	"os"
 	"os/signal"
 
@@ -17,12 +20,14 @@ func Boot() {
 	initConfigs()
 	l := initLogger()
 
-	userFetcher := user.NewUserFetcher()
+	fetcher := fetcher.NewFetcher()
+	producer := streaming.NewSyncProducer()
+	userService := services2.NewUserService(fetcher, producer)
 
 	r := &http.Router{
 		Config: &http.Config,
 	}
-	r.Init(l, userFetcher)
+	r.Init(l, userService)
 
 	// exit signal channel
 	signals := make(chan os.Signal, 1)
@@ -53,6 +58,8 @@ func initConfigs() {
 	err := configs.Load(
 		new(logs.LoggerConfig),
 		new(http.RouterConf),
+		new(streaming.KafkaConfig),
+		new(repository.RepoConfig),
 	)
 	if err != nil {
 		inLog.Fatal("error in loading configurations", err)
