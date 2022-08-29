@@ -42,25 +42,16 @@ func (f *UsrFetcher) FetchRepos(ctx context.Context, userName string) (repos []m
 
 func mapUser(u User) models.User {
 	user := models.User{
-		Login:           u.Login,
-		Id:              u.Id,
-		Url:             u.Url,
-		FollowersUrl:    u.FollowersUrl,
-		FollowingUrl:    u.FollowingUrl,
-		ReposUrl:        u.ReposUrl,
-		Type:            u.Type,
-		SiteAdmin:       u.SiteAdmin,
-		Name:            u.Name,
-		Company:         u.Company,
-		Location:        u.Location,
-		Email:           u.Email,
-		Bio:             u.Bio,
-		TwitterUsername: u.TwitterUsername,
-		PublicRepos:     u.PublicRepos,
-		Followers:       u.Followers,
-		Following:       u.Following,
-		CreatedAt:       u.CreatedAt,
-		UpdatedAt:       u.UpdatedAt,
+		Login:       u.Login,
+		Id:          u.Id,
+		Name:        u.Name,
+		Company:     u.Company,
+		Location:    u.Location,
+		Email:       u.Email,
+		PublicRepos: u.PublicRepos,
+		Followers:   u.Followers,
+		CreatedAt:   u.CreatedAt,
+		UpdatedAt:   u.UpdatedAt,
 	}
 
 	return user

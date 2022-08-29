@@ -26,7 +26,7 @@ func NewSyncProducer() streaming.Producer {
 	conf.Producer.Partitioner = sarama.NewRandomPartitioner
 	syncProd, err := sarama.NewSyncProducer(brokers, conf)
 	if err != nil {
-		log.Fatal("error initiating streaming")
+		log.Fatal("error initiating streaming", err)
 	}
 
 	return &Producer{

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userapp-deployment
+  labels:
+    app: userapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: userapp
+  template:
+    metadata:
+      labels:
+        app: userapp
+    spec:
+      containers:
+        - name: userapp
+          image: pckushan/user-service:v1.0.0
+          ports:
+            - containerPort: 8085
+          env:
+            - name: KAFKA_BROKERS
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka-config
+                  key: kafka-brokers
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: userapp-service
+spec:
+  type: NodePort
+  selector:
+    app: userapp
+  ports:
+    - protocol: TCP
+      port: 8085
+      targetPort: 8085
+      nodePort: 30200
